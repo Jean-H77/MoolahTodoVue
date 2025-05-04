@@ -1,5 +1,5 @@
 <script setup>
-import {ref, watch} from 'vue';
+import {ref, useTemplateRef, watch} from 'vue';
 import { useTodosStore } from '../stores/todosStore.js';
 import { useTodoTitleValidation } from '../composables/useValidation';
 
@@ -10,7 +10,7 @@ const props = defineProps({
 const emit = defineEmits(['update:isVisible']);
 
 const todosStore = useTodosStore();
-const form = ref({});
+const form = useTemplateRef('form');
 const dueDateInput = ref({});
 const { titleInput, titleRules, formValid } = useTodoTitleValidation();
 
