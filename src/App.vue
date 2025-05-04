@@ -10,8 +10,8 @@ import SearchTodo from "./components/SearchTodo.vue";
 
 const todosStore = useTodosStore();
 
-const showAddDialog = ref(false);
-const showEditDialog = ref(false);
+const isAddDialogVisible = ref(false);
+const isEditDialogVisible = ref(false);
 const showDeleteDialog = ref(false);
 
 const deleteDialogData = ref({ title: '', guid: '' });
@@ -23,12 +23,12 @@ const handleShowDeleteDialog = ({ title, guid }) => {
 };
 
 const handleShowAddDialog = () => {
-  showAddDialog.value = true;
+  isAddDialogVisible.value = true;
 };
 
 const handleShowEditDialog = (todo) => {
   editDialogData.value = todo;
-  showEditDialog.value = true;
+  isEditDialogVisible.value = true;
 }
 
 const setProvider = (provider) => {
@@ -113,7 +113,7 @@ watch(() => todosStore.totalPages, () => {
 
       </v-card>
 
-      <AddTodoDialog v-model:isVisible='showAddDialog' />
+      <AddTodoDialog v-model:isVisible='isAddDialogVisible' />
 
       <DeleteTodoDialog
           v-model:isVisible='showDeleteDialog'
@@ -122,7 +122,7 @@ watch(() => todosStore.totalPages, () => {
       />
 
       <EditTodoDialog
-          v-model:is-visible='showEditDialog'
+          v-model:is-visible='isEditDialogVisible'
           :todo='editDialogData'/>
 
     </v-container>
