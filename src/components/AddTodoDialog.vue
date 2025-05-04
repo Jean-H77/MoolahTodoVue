@@ -15,7 +15,7 @@ const form = useTemplateRef('form');
 const dueDateInput = ref({});
 const { titleInput, titleRules, formValid } = useTodoTitleValidation();
 
-const isVisible = computed({
+const localVisible = computed({
   get: () => props.isVisible,
   set: (newVal) => {
     emit('update:isVisible', newVal);
@@ -37,44 +37,45 @@ const addTodo = async () => {
   await todosStore.addTodo(titleInput.value, date);
 
   titleInput.value = '';
-  closeDialog();
+  localVisible.value = false;
 };
+
 </script>
 
 <template>
-  <v-dialog v-model="isVisible" max-width="600">
+  <v-dialog v-model="localVisible" max-width='600'>
     <v-card>
-      <v-card-title class="d-flex align-center">
-        <v-icon class="me-2" color="grey-darken-3">mdi-playlist-plus</v-icon>
-        <span class="text-h6">Todo Registration</span>
+      <v-card-title class='d-flex align-center'>
+        <v-icon class='me-2' color='grey-darken-3'>mdi-playlist-plus</v-icon>
+        <span class='text-h6'>Todo Registration</span>
       </v-card-title>
 
       <v-card-text>
-        <v-form ref="form" v-model="formValid" @submit.prevent="addTodo">
+        <v-form ref='form' v-model='formValid' @submit.prevent='addTodo'>
           <v-text-field
-              v-model="titleInput"
-              label="Title*"
-              :rules="titleRules"
+              v-model='titleInput'
+              label='Title*'
+              :rules='titleRules'
               required
               clearable
-              prepend-inner-icon="mdi-format-title"
-              class="mb-4"
+              prepend-inner-icon='mdi-format-title'
+              class='mb-4'
           />
 
           <v-date-input
-              v-model="dueDateInput"
-              label="Due Date input"
-              variant="underlined"
+              v-model='dueDateInput'
+              label='Due Date input'
+              variant='underlined'
           />
 
-          <small class="text-caption text-medium-emphasis">*indicates required field</small>
+          <small class='text-caption text-medium-emphasis'>*indicates required field</small>
         </v-form>
       </v-card-text>
 
       <v-card-actions>
         <v-spacer />
-        <v-btn variant="text" text="Close" @click="closeDialog" />
-        <v-btn type="submit" color="primary" variant="tonal" text="Add" @click="addTodo" />
+        <v-btn variant='text' text='Close' @click="localVisible = false;" />
+        <v-btn type='submit' color='primary' variant='tonal' text='Add' @click="addTodo" />
       </v-card-actions>
     </v-card>
   </v-dialog>

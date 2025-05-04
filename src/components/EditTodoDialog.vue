@@ -42,37 +42,37 @@ const editTodo = async () => {
   });
 
   titleInput.value = '';
-  closeDialog();
+  localVisible.value = false;
 };
 
 </script>
 
 <template>
-  <v-dialog v-model="localVisible" max-width="400" persistent>
-    <v-card title="Edit Todo">
+  <v-dialog v-model='localVisible' max-width='400' persistent>
+    <v-card title='Edit Todo'>
       <v-card-text>
-        <v-form ref="form" v-model="formValid" @submit.prevent="editTodo">
+        <v-form ref='form' v-model='formValid' @submit.prevent='editTodo'>
           <v-text-field
-              v-model="titleInput"
-              label="Title*"
-              :rules="titleRules"
+              v-model='titleInput'
+              label='Title*'
+              :rules='titleRules'
               required
               clearable
-              prepend-inner-icon="mdi-format-title"
-              class="mb-4"
+              prepend-inner-icon='mdi-format-title'
+              class='mb-4'
           />
 
           <v-date-input
-              v-model="dueDateInput"
-              label="New Due Date"
-              variant="underlined"
+              v-model='dueDateInput'
+              label='New Due Date'
+              variant='underlined'
           />
         </v-form>
       </v-card-text>
       <template v-slot:actions>
         <v-spacer></v-spacer>
-        <v-btn @click="closeDialog" color="grey-darken-4">Close</v-btn>
-        <v-btn @click="editTodo" color="blue">Save</v-btn>
+        <v-btn @click="localVisible = false;" color='grey-darken-4'>Close</v-btn>
+        <v-btn @click="editTodo" color='blue'>Save</v-btn>
       </template>
     </v-card>
   </v-dialog>
