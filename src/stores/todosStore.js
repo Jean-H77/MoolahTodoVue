@@ -15,11 +15,10 @@ export const useTodosStore = defineStore('todosStore', {
     actions: {
         async fetchTodos() {
             try {
-                return await api.get('/').then(r => {
-                    this.todos = r.data.todos;
-                    this.totalTodos = r.data.totalCount
-                    this.totalPages = Math.max(1, Math.ceil(this.totalTodos / pageSize));
-                });
+                const r =  await api.get('/');
+                this.todos = r.data.todos;
+                this.totalTodos = r.data.totalCount
+                this.calculateTotalPages();
             } catch (error) {
                 console.error('Error fetching todos:', error);
             }
@@ -27,17 +26,14 @@ export const useTodosStore = defineStore('todosStore', {
         async fetchTodosBySearchQuery(searchQuery) {
             console.log(searchQuery);
             try {
-               await api.get('/search', {
+               const r = await api.get('/search', {
                     params: {
                         search: searchQuery
                     }
-                }).then(r => {
-                    if(r.status === 200) {
-                        this.todos = r.data.todos;
-                        this.totalTodos = r.data.totalCount;
-                        this.totalPages = Math.max(1, Math.ceil(this.totalTodos / pageSize));
-                    }
                 });
+                this.todos = r.data.todos;
+                this.totalTodos = r.data.totalCount;
+                this.calculateTotalPages();
             } catch (error) {
                 console.error('Error fetching todos:', error);
             }
@@ -45,30 +41,21 @@ export const useTodosStore = defineStore('todosStore', {
         async addTodo(title, dueDate) {
             try {
                 const payload = { title };
-                if (dueDate !== null && dueDate !== undefined) {
+                if (dueDate != null) {
                     payload.dueDate = dueDate;
                 }
-
-                await api.post(`/`, payload)
-                    .then(r => {
-                        if(r.status === 200) {
-                            this.todos.push(r.data);
-                            this.totalTodos++;
-                        }
-                    });
+                const r = await api.post(`/`, payload);
+                this.todos.push(r.data);
+                this.totalTodos++;
             } catch (error) {
                 console.error('Error adding todo:', error);
             }
         },
         async deleteTodo(guid) {
             try {
-                await api.delete(`/${guid}`)
-                    .then(r => {
-                        if(r.status === 200) {
-                            this.totalTodos--;
-                            this.todos = this.todos.filter(todo => todo.guid !== guid);
-                        }
-                    });
+                await api.delete(`/${guid}`);
+                this.totalTodos--;
+                this.todos = this.todos.filter(todo => todo.guid !== guid);
             } catch (error) {
                 console.error('Error deleting todo:', error);
             }
@@ -76,15 +63,10 @@ export const useTodosStore = defineStore('todosStore', {
         async updateTodo(todo) {
             try {
                 console.log(todo);
-                await api.put(`/`, todo)
-                    .then(r => {
-                        if(r.status === 200) {
-                            const index = this.todos.findIndex(t => t.guid === todo.guid);
-                            if (index !== -1) {
-                                this.todos[index] = todo;
-                            }
-                        }
-                    });
+                await api.put(`/`, todo);
+                const index = this.todos.findIndex(t => t.guid === todo.guid);
+                if (index !== -1)
+                    this.todos[index] = todo;
             } catch (error) {
                 console.error('Error adding todo:', error);
             }
@@ -99,8 +81,10 @@ export const useTodosStore = defineStore('todosStore', {
             } else {
                 await this.fetchTodos();
             }
-
             this.page = Math.min(this.page, this.totalPages);
+        },
+        calculateTotalPages() {
+            this.totalPages = Math.max(1, Math.ceil(this.totalTodos / pageSize));
         }
     }
 });
